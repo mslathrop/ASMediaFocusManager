@@ -149,28 +149,38 @@ static CGFloat const kAnimationDuration = 0.5;
     viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
     viewController.mainImageView.image = image;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL *url;
-        NSData *data;
-        NSError *error = nil;
-        
-        url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
-        data = [NSData dataWithContentsOfURL:url options:0 error:&error];
-        if(error != nil)
-        {
-            NSLog(@"Warning: Unable to load image at %@. %@", url, error);
-        }
-        else
-        {
-            UIImage *image;
-
-            image = [[UIImage alloc] initWithData:data];
-            image = [self decodedImageWithImage:image];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                viewController.mainImageView.image = image;
-            });
-        }
-    });
+    if ([self.delegate respondsToSelector:@selector(mediaFocusManager:mediaURLForView:)]) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *url;
+            NSData *data;
+            NSError *error = nil;
+            
+            url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
+            data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+            if(error != nil)
+            {
+                NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+            }
+            else
+            {
+                UIImage *image;
+                
+                image = [[UIImage alloc] initWithData:data];
+                image = [self decodedImageWithImage:image];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    viewController.mainImageView.image = image;
+                });
+            }
+        });
+    }
+    else if ([self.delegate respondsToSelector:@selector(mediaFocusManager:mediaImageForView:)]) {
+        UIImage *image = [self.delegate mediaFocusManager:self mediaImageForView:mediaView];
+        viewController.mainImageView.image = image;
+    }
+    else {
+        // raise exception if media source method is not implemented
+        [NSException raise:@"Missing media method" format:@"One of the following delegate methods must be implemented:\n\n(NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view\n\n(UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaImageForView:(UIView *)view"];
+    }
 
     return viewController;
 }

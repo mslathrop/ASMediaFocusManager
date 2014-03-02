@@ -18,12 +18,14 @@
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view;
 // Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
-// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
 // Returns the title for this media view. Return nil if you don't want any title to appear.
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 
 @optional
+// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
+- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
+// Returns UIImage. The UIImage is used to create an image at full screen.
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaImageForView:(UIView *)view;
 // Called when a focus view is about to be shown. For example, you might use this method to hide the status bar.
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager;
 // Called when a focus view has been shown.
