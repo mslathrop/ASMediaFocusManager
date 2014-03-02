@@ -9,7 +9,7 @@
 #import "ASMediaFocusController.h"
 #import <QuartzCore/QuartzCore.h>
 
-static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
+static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.3;
 
 @interface ASMediaFocusController ()
 
