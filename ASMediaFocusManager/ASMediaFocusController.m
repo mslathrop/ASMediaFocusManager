@@ -173,6 +173,9 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
     
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    [self.scrollView addGestureRecognizer:longPressGestureRecognizer];
+    
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
     tapGesture.numberOfTapsRequired = 2;
     [self.scrollView addGestureRecognizer:tapGesture];
@@ -236,6 +239,41 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     if(scale == self.scrollView.maximumZoomScale)
     {
         [self.scrollView scrollRectToVisible:frame animated:NO];
+    }
+}
+
+#pragma mark - Long press methods
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
+
+- (void)copy:(id)sender {
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    [pasteboard setImage:self.mainImageView.image];
+}
+
+- (void)thumb:(id)sender
+{
+    [[UIPasteboard generalPasteboard] setImage:self.focusingImage];
+}
+
+- (void)saveImage:(id)sender {
+    UIImage* imageToSave = self.mainImageView.image;
+    UIImageWriteToSavedPhotosAlbum(imageToSave, nil, nil, nil);
+}
+
+- (void)handleLongPress:(id)sender {
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    if (![menu isMenuVisible]) {
+        [self becomeFirstResponder];
+        [menu setTargetRect:self.mainImageView.frame inView:self.view];
+        
+        UIMenuItem *thumb = [[UIMenuItem alloc] initWithTitle:@"Copy Thumbnail" action:@selector(thumb:)];
+        UIMenuItem *save = [[UIMenuItem alloc] initWithTitle:@"Save Image" action:@selector(saveImage:)];
+        menu.menuItems = @[thumb, save];
+        
+        [menu setMenuVisible:YES animated:YES];
     }
 }
 
