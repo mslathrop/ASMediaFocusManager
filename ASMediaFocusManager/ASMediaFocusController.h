@@ -17,6 +17,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) UIView *accessoryView;
 @property (strong, nonatomic) UIImage *focusingImage;
+@property (strong, nonatomic) UITapGestureRecognizer *doubleTapGesture;
 
 - (void)updateOrientationAnimated:(BOOL)animated;
 - (void)installZoomView;

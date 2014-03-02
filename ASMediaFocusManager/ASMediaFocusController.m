@@ -164,7 +164,6 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)installZoomView
 {
     ASImageScrollView *scrollView;
-    UITapGestureRecognizer *tapGesture;
     
     scrollView = [[ASImageScrollView alloc] initWithFrame:self.contentView.bounds];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -176,9 +175,9 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     UILongPressGestureRecognizer *longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [self.scrollView addGestureRecognizer:longPressGestureRecognizer];
     
-    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-    tapGesture.numberOfTapsRequired = 2;
-    [self.scrollView addGestureRecognizer:tapGesture];
+    self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    self.doubleTapGesture.numberOfTapsRequired = 2;
+    [self.scrollView addGestureRecognizer:self.doubleTapGesture];
 }
 
 - (void)uninstallZoomView

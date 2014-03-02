@@ -19,6 +19,7 @@ static CGFloat const kAnimationDuration = 0.5;
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic) BOOL isZooming;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @end
 
 @implementation ASMediaFocusManager
@@ -120,12 +121,11 @@ static CGFloat const kAnimationDuration = 0.5;
 {
     // We need the view to be loaded.
     if(focusViewController.view)
-    {        
+    {
         if(self.isDefocusingWithTap)
         {
-            UITapGestureRecognizer *tapGesture;
-            tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
-            [focusViewController.view addGestureRecognizer:tapGesture];
+            self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
+            [focusViewController.view addGestureRecognizer:self.tapGesture];
         }
         else
         {
@@ -201,6 +201,7 @@ static CGFloat const kAnimationDuration = 0.5;
     if(self.zoomEnabled)
     {
         [self.focusViewController installZoomView];
+        [self.tapGesture requireGestureRecognizerToFail:self.focusViewController.doubleTapGesture];
     }
 }
 
@@ -322,7 +323,7 @@ static CGFloat const kAnimationDuration = 0.5;
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
-    if(self.isZooming && self.gestureDisabledDuringZooming) return;
+    if (self.isZooming && self.gestureDisabledDuringZooming) return;
     
     UIView *contentView;
     CGRect __block bounds;
