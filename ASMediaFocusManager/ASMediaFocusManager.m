@@ -175,6 +175,16 @@ static CGFloat const kAnimationDuration = 0.3;
     }
     else if ([self.delegate respondsToSelector:@selector(mediaFocusManager:mediaImageForView:)]) {
         UIImage *image = [self.delegate mediaFocusManager:self mediaImageForView:mediaView];
+        
+        CGFloat minSize = MIN(image.size.width, image.size.height);
+        CGFloat ratio = minSize/640.0f;
+        
+        if (image.size.width < 640) {
+            image = [UIImage imageWithCGImage:[image CGImage]
+                                        scale:(ratio)
+                                  orientation:(image.imageOrientation)];
+        }
+        
         viewController.mainImageView.image = image;
     }
     else {
